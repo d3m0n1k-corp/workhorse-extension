@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json.schemastore.org/chrome-manifest",
+    "name": "Workhorse",
+    "description": "Workhorse Extension",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "index.html",
+        "default_icon": {
+            "24": "vite.svg",
+            "16": "vite.svg",
+            "32": "vite.svg"
+        }
+    },
+    "permissions": [
+        "storage",
+        "activeTab"
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+    }
+}
