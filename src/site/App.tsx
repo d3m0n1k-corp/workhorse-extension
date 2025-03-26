@@ -1,7 +1,6 @@
 import { Textarea } from '@/components/ui/textarea'
 import './App.css'
 import { Button } from '@/components/ui/button'
-import { LoadWasm } from '@/components/wasm/load-wasm'
 import { execute_converter } from '@/wasm/operations'
 
 async function submit() {
@@ -20,13 +19,11 @@ async function submit() {
 function App() {
 
   return (
-    <LoadWasm>
-      < div className='flex flex-col justify-evenly min-h-full' >
-        <Textarea id='inp' className='min-w-200 min-h-100' />
-        <Textarea id='out' className='min-w-200 min-h-100' />
-        <Button onClick={submit}>Test</Button>
-      </div >
-    </LoadWasm>
+    < div className='flex flex-col justify-evenly min-h-full' >
+      <Textarea id='inp' className='min-w-200 min-h-100' />
+      <Textarea id='out' className='min-w-200 min-h-100' />
+      <Button onClick={submit}>Test</Button>
+    </div >
   )
 }
 
