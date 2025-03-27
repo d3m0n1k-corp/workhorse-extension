@@ -1,5 +1,5 @@
-import { Footer } from "@/components/custom/footer";
-import { Header } from "@/components/custom/header";
+import { Footer } from "@/components/structure/footer";
+import { Header } from "@/components/structure/header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
