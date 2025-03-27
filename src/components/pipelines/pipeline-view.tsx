@@ -1,5 +1,5 @@
-import { PipelineGrid } from "../ui/pipeline-grid";
-import { SavedPipeline } from "../ui/saved-pipeline";
+import { PipelineGrid } from "./pipeline-grid";
+import { SavedPipeline } from "./saved-pipeline";
 
 export function PipelineView({ className = "" }: { className?: string }) {
     return (

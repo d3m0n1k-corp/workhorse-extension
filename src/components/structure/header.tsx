@@ -1,4 +1,4 @@
-import { EmptyHeader } from "../ui/empty-header";
+import { EmptyHeader } from "./empty-header";
 import { CodeXml } from 'lucide-react';
 
 export function Header({ className }: { className?: string }) {
