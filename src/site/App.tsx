@@ -1,7 +1,7 @@
 import { Textarea } from '@/components/ui/textarea'
 import './App.css'
-import { Button } from '@/components/ui/button'
 import { execute_converter } from '@/wasm/operations'
+import { Button } from '@/components/ui/button'
 
 async function submit() {
   const inp = document.getElementById('inp') as HTMLTextAreaElement
@@ -19,11 +19,11 @@ async function submit() {
 function App() {
 
   return (
-    < div className='flex flex-col justify-evenly min-h-full' >
-      <Textarea id='inp' className='min-w-200 min-h-100' />
-      <Textarea id='out' className='min-w-200 min-h-100' />
+    <div className='min-w-full min-h-full'>
+      < Textarea id='inp' />
+      <Textarea id='out' />
       <Button onClick={submit}>Test</Button>
-    </div >
+    </div>
   )
 }
 

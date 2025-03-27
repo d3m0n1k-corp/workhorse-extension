@@ -1,14 +1,12 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { Footer } from "@/components/custom/footer";
+import { Header } from "@/components/custom/header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <SidebarProvider>
-            <AppSidebar />
-            {/* <SidebarTrigger className="min-w-full justify-items-start flex-col" /> */}
-            <main>
-                {children}
-            </main>
-        </SidebarProvider>
+        <main className="flex flex-col min-h-screen">
+            <Header />
+            {children}
+            <Footer />
+        </main >
     )
 }
