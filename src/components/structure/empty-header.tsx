@@ -2,7 +2,7 @@ interface EmptyHeaderProps {
     heading: string | React.ReactNode
     text?: string
     children?: React.ReactNode
-    className?: string
+    className: string
 }
 
 export function EmptyHeader({
@@ -15,7 +15,7 @@ export function EmptyHeader({
     return (
         <div className={className}>
             <div className="grid gap-1">
-                <h1 className="font-heading text-3xl md:text-4xl">{heading}</h1>
+                <h1 className="font-heading text-4xl md:text-4xl">{heading}</h1>
                 {text && <p className="text-lg text-muted-foreground">{text}</p>}
             </div>
             {children}

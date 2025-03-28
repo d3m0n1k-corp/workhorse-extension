@@ -1,4 +1,4 @@
-import { Copy } from "lucide-react";
+import { Copy, Download } from "lucide-react";
 
 export function OutputBox() {
     return (
@@ -7,6 +7,8 @@ export function OutputBox() {
                 <span >Output</span>
                 <span className="flex items-center justify-center">
                     <Copy size={20} />
+                    <span className="w-2" />
+                    <Download size={20} />
                 </span>
             </div>
             <div className="flex-row w-full ">

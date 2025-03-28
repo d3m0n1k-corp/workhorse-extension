@@ -9,13 +9,12 @@ export function SavedPipeline({
     name: string
     step_count: number
 }) {
-    console.log(id)
     return (
-        <div className="flex flex-col items-center justify-between p-4 rounded-lg shadow-md border-gray-400 border-1 min-w-3xs">
+        <div id={id} className="flex flex-col items-center justify-between p-4 rounded-lg shadow-md border-gray-400 border-1 min-w-3xs">
             <div className="min-w-full font-semibold">
                 {name}
             </div>
-            <div className="min-w-full text-xs my-1">
+            <div className="min-w-full text-xs my-2">
                 {step_count} steps
             </div>
             <div className="flex flex-row min-w-full text-xs font-extralight justify-between">
