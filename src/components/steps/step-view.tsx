@@ -1,6 +1,6 @@
 import { FileDown, FileUp, MoveDown, Plus, Save } from "lucide-react";
 import { Button } from "../ui/button";
-import { Step } from "./step";
+import { listConnectorNames, Step } from "./step";
 import { Pipeline } from "@/lib/objects";
 import { useState } from "react";
 
@@ -55,7 +55,7 @@ export function StepView({
 
     function appendStep() {
         var newStep = {
-            name: "json_to_yaml",
+            name: listConnectorNames()[0],
             config: {} as Record<string, any>,
         };
         pipeline.steps = [...steps, newStep];

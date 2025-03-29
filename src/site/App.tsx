@@ -11,41 +11,8 @@ function App() {
   )
 
   pipeline = {
-    name: "test",
-    steps: [
-      {
-        name: "yaml_to_json",
-        config: {
-          input: "test.yaml",
-          output: "test.json"
-        } as Record<string, any>,
-      },
-      {
-        name: "yaml_to_json",
-        config: {
-          input: "test.yaml",
-          output: "test.json"
-        } as Record<string, any>,
-      }, {
-        name: "yaml_to_json",
-        config: {
-          input: "test.yaml",
-          output: "test.json"
-        } as Record<string, any>,
-      }, {
-        name: "yaml_to_json",
-        config: {
-          input: "test.yaml",
-          output: "test.json"
-        } as Record<string, any>,
-      }, {
-        name: "yaml_to_json",
-        config: {
-          input: "test.yaml",
-          output: "test.json"
-        } as Record<string, any>,
-      }
-    ]
+    name: "",
+    steps: []
   }
 
   return (
