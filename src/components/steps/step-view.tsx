@@ -2,22 +2,18 @@ import { FileDown, FileUp, MoveDown, Plus, Save } from "lucide-react";
 import { Button } from "../ui/button";
 import { listConnectorNames, Step } from "./step";
 import { Pipeline } from "@/lib/objects";
-import { useState } from "react";
+import { usePipelineStore } from "@/lib/store";
+import { randomUUID } from "crypto";
 
 export function StepView({
     pipelineInput,
 }: {
     pipelineInput: Pipeline
 }) {
-
-    const [pipeline, _setPipeline] = useState(pipelineInput);
-    const [steps, _setSteps] = useState(pipeline.steps || []);
-    const [name, setName] = useState(pipeline.name || "");
-
     const populateSteps = () => {
         return (
             <>
-                {...steps.map((step, _index) => {
+                {...pipelineInput.steps.map((step, _index) => {
                     return (
                         <>
                             <Step name={step.name} config={step.config} />
@@ -42,9 +38,7 @@ export function StepView({
                     var content = e.target?.result;
                     if (content) {
                         var pipeline = JSON.parse(content as string);
-                        _setPipeline(pipeline);
-                        _setSteps(pipeline.steps || []);
-                        setName(pipeline.name || "");
+                        usePipelineStore.getState().replacePipeline(pipeline);
                     }
                 };
                 reader.readAsText(file);
@@ -55,12 +49,11 @@ export function StepView({
 
     function appendStep() {
         var newStep = {
+            id: randomUUID().toString(),
             name: listConnectorNames()[0],
             config: {} as Record<string, any>,
         };
-        pipeline.steps = [...steps, newStep];
-        _setSteps(pipeline.steps);
-        _setPipeline(pipeline);
+        usePipelineStore.getState().addStep(newStep);
     }
 
 
@@ -71,7 +64,13 @@ export function StepView({
                     <div className="flex ">
                         <h1 className="text-3xl my-2">Builder</h1>
                         <div className="flex flex-col items-start justify-center mx-4 py-0">
-                            <input type="text" placeholder="Pipeline Name" className="border-1 rounded-md p-2" value={name} onChange={(e) => { setName(e.target.value) }} />
+                            <input type="text" placeholder="Pipeline Name" className="border-1 rounded-md p-2"
+                                value={pipelineInput.name}
+                                onChange={(e) => {
+                                    pipelineInput.name = e.target.value;
+                                    usePipelineStore.getState().replacePipeline(pipelineInput)
+                                }}
+                            />
                         </div>
                         <div className="flex flex-col items-start justify-center py-0">
                             <Button>

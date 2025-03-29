@@ -1,6 +1,6 @@
 export function list_converters() {
     const converter_list_json = window.list_converters();
-    var conv_list: ConverterDiscoveryResponse = JSON.parse(converter_list_json);
+    const conv_list: ConverterDiscoveryResponse = JSON.parse(converter_list_json);
     if (conv_list.Error) {
         console.error(conv_list.Error);
     }

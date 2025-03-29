@@ -1,6 +1,7 @@
 export type PipelineStep = {
+    id: string;
     name: string;
-    config: Record<string, any>;
+    config: Record<string, string | number | boolean | null>;
 }
 
 export type Pipeline = {

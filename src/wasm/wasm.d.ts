@@ -3,9 +3,8 @@ export { };
 declare global {
     export interface Window {
         Go: any;
-        list_converters: () => any;
-        execute_converter: (conv_name: string, input: string, config: string) => any;
-        configure: (config_json: string) => any;
+        list_converters: () => string;
+        execute_converter: (conv_name: string, input: string, config: string) => string;
     }
 
     export type ConfigItem = {
