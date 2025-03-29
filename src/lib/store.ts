@@ -5,7 +5,7 @@ type PipelineStore = {
     pipeline: Pipeline;
     replacePipeline: (pipeline: Pipeline) => void;
     addStep: (step: PipelineStep) => void;
-    removeStep: (stepName: string) => void;
+    removeStep: (id: string) => void;
     updateStep: (stepId: string, step: PipelineStep) => void;
 }
 
@@ -21,8 +21,8 @@ export const usePipelineStore = create<PipelineStore>()(
             const steps = [...state.pipeline.steps, step]
             return { pipeline: { ...state.pipeline, steps } }
         }),
-        removeStep: (stepName: string) => set((state) => {
-            const steps = state.pipeline.steps.filter((step) => step.name !== stepName)
+        removeStep: (id: string) => set((state) => {
+            const steps = state.pipeline.steps.filter((step) => step.id !== id)
             return { pipeline: { ...state.pipeline, steps } }
         }),
         updateStep: (stepId: string, step: PipelineStep) => set((state) => {

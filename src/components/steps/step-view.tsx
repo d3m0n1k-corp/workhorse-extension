@@ -3,7 +3,9 @@ import { Button } from "../ui/button";
 import { listConnectorNames, Step } from "./step";
 import { Pipeline } from "@/lib/objects";
 import { usePipelineStore } from "@/lib/store";
-import { randomUUID } from "crypto";
+import { v4 as uuidv4 } from "uuid";
+
+
 
 export function StepView({
     pipelineInput,
@@ -13,11 +15,11 @@ export function StepView({
     const populateSteps = () => {
         return (
             <>
-                {...pipelineInput.steps.map((step, _index) => {
+                {...pipelineInput.steps.map((step, index) => {
                     return (
                         <>
-                            <Step name={step.name} config={step.config} />
-                            <MoveDown className="my-2" size={16} />
+                            <Step step={step} key={index} />
+                            {(index < pipelineInput.steps.length - 1) ? <MoveDown className="my-2" size={16} /> : <></>}
                         </>
                     )
                 })}
@@ -49,7 +51,7 @@ export function StepView({
 
     function appendStep() {
         var newStep = {
-            id: randomUUID().toString(),
+            id: uuidv4(),
             name: listConnectorNames()[0],
             config: {} as Record<string, any>,
         };
