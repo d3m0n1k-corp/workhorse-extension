@@ -7,7 +7,6 @@ export function Step({
     name: string
     config: any
 }) {
-    console.log("Step config", config)
     return (
         <div className="flex flex-row w-full">
             <div className="flex border-1 rounded-md w-full h-15 justify-between">

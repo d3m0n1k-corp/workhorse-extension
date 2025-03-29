@@ -50,7 +50,7 @@ function App() {
 
   return (
     <div className='flex-col flex min-w-full min-h-full'>
-      <StepView pipeline={pipeline} />
+      <StepView pipelineInput={pipeline} />
       <IOView />
       <PipelineView />
     </div>

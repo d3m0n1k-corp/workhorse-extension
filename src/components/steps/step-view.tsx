@@ -5,14 +5,14 @@ import { Pipeline } from "@/lib/objects";
 import { useState } from "react";
 
 export function StepView({
-    pipeline: pipeline,
+    pipelineInput,
 }: {
-    pipeline: Pipeline
+    pipelineInput: Pipeline
 }) {
 
-    const [pipelineObject, _setPipeline] = useState(pipeline);
-    const [steps, _setSteps] = useState(pipelineObject.steps || []);
-    const [name, setName] = useState(pipelineObject.name || "");
+    const [pipeline, _setPipeline] = useState(pipelineInput);
+    const [steps, _setSteps] = useState(pipeline.steps || []);
+    const [name, setName] = useState(pipeline.name || "");
 
     const populateSteps = () => {
         return (
@@ -29,6 +29,41 @@ export function StepView({
         )
     }
 
+    function importFile() {
+        console.log("Importing file...");
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = ".json";
+        fileInput.onchange = (e) => {
+            var file = (e.target as HTMLInputElement).files?.[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = (e) => {
+                    var content = e.target?.result;
+                    if (content) {
+                        var pipeline = JSON.parse(content as string);
+                        _setPipeline(pipeline);
+                        _setSteps(pipeline.steps || []);
+                        setName(pipeline.name || "");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+        fileInput.click();
+    }
+
+    function appendStep() {
+        var newStep = {
+            name: "json_to_yaml",
+            config: {} as Record<string, any>,
+        };
+        pipeline.steps = [...steps, newStep];
+        _setSteps(pipeline.steps);
+        _setPipeline(pipeline);
+    }
+
+
     return (
         <div className="grow flex flex-col items-start justify-center min-w-full">
             <div className="flex flex-col items-start justify-center min-w-full min-h-full">
@@ -39,15 +74,21 @@ export function StepView({
                             <input type="text" placeholder="Pipeline Name" className="border-1 rounded-md p-2" value={name} onChange={(e) => { setName(e.target.value) }} />
                         </div>
                         <div className="flex flex-col items-start justify-center py-0">
-                            <Button><Save />Save Pipeline</Button>
+                            <Button>
+                                <Save />Save Pipeline
+                            </Button>
                         </div>
                     </div>
                     <div className="flex flex-row ">
                         <div className="flex flex-col items-start justify-center py-0">
-                            <Button><FileDown />Import</Button>
+                            <Button onClick={(_) => importFile()}>
+                                <FileDown />Import
+                            </Button>
                         </div>
                         <div className="flex flex-col items-start justify-center py-0">
-                            <Button><FileUp />Export</Button>
+                            <Button>
+                                <FileUp />Export
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -55,7 +96,7 @@ export function StepView({
                     {populateSteps()}
                 </div>
                 <div className="grow flex flex-col items-center justify-center min-w-full">
-                    <Button className="w-20">
+                    <Button className="w-20" onClick={(_) => appendStep()}>
                         <Plus />
                     </Button>
                 </div>
