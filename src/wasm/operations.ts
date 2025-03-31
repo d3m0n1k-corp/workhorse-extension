@@ -15,3 +15,12 @@ export function execute_converter(conv_name: string, input: string, config: stri
     }
     return result;
 }
+
+export function chain_execute(chain: ChainRequest[], input: string) {
+    const chain_json = window.chain_execute(JSON.stringify(chain), input);
+    var result: ChainResponse = JSON.parse(chain_json);
+    if (result.Error) {
+        console.error(result.Error);
+    }
+    return result;
+}

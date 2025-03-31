@@ -5,6 +5,7 @@ declare global {
         Go: any;
         list_converters: () => string;
         execute_converter: (conv_name: string, input: string, config: string) => string;
+        chain_execute: (chain_links: string, input: string) => string
     }
 
     export type ConfigItem = {
@@ -29,6 +30,21 @@ declare global {
 
     export type ConverterExecutionResponse = {
         Result: string;
+        Error: string | null;
+    }
+
+    export type ChainRequest = {
+        name: string;
+        config_json: string;
+    }
+
+    export type ChainResult = {
+        output: string;
+        error: string | null;
+    }
+
+    export type ChainResponse = {
+        Result: ChainResult[];
         Error: string | null;
     }
 }

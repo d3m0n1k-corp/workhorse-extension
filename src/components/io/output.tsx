@@ -1,6 +1,6 @@
 import { Copy, Download } from "lucide-react";
 
-export function OutputBox() {
+export function OutputBox({ output }: { output: string }) {
     return (
         <div className="grow">
             <div className="flex w-full justify-between my-4">
@@ -12,8 +12,7 @@ export function OutputBox() {
                 </span>
             </div>
             <div className="flex-row w-full ">
-                <textarea name="input_box" id="inp_box" className="w-full border-1 rounded-lg h-50 resize-none">
-                </textarea>
+                <textarea name="input_box" id="inp_box" className="w-full border-1 rounded-lg h-50 resize-none" value={output} onChange={() => { }} />
             </div>
         </div>
     )

@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import "../../wasm/wasm_exec.js";
 import "../../wasm/wasm.d.ts";
-import { list_converters } from "@/wasm/operations.ts";
+import { chain_execute, list_converters } from "@/wasm/operations.ts";
 
 async function initialize() {
     await initializeWasmModule();
     await initializeApplication();
+    await test();
 }
 
 async function initializeWasmModule() {
@@ -18,6 +19,41 @@ async function initializeApplication() {
     const conv_list = list_converters();
     console.log(conv_list.Result);
     localStorage.setItem("converter_list", JSON.stringify(conv_list.Result));
+}
+
+async function test() {
+    const chain: ChainRequest[] = [
+        {
+            name: "json_to_yaml",
+            config_json: "{}"
+        },
+        {
+            name: "yaml_to_json",
+            config_json: JSON.stringify({
+                indent_size: 1,
+                indent_type: "tab"
+            })
+        },
+        {
+            name: "json_prettifier",
+            config_json: JSON.stringify({
+                indent_size: 1,
+                indent_type: "tab"
+            })
+        }
+    ]
+
+    const input = `{
+        "test" : "test1",
+        "idk" : "idk",
+        "idk2" : {
+            "idk21" : "resp",
+            "idk22" : "resp"
+        }
+    }`;
+
+    const result = await chain_execute(chain, input)
+    console.log(result);
 }
 
 export const LoadWasm: React.FC<React.PropsWithChildren<{}>> = (props) => {
