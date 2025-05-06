@@ -1,7 +1,7 @@
 import { FileDown, FileUp, MoveDown, Plus, Save } from "lucide-react";
 import { Button } from "../ui/button";
-import { listConnectorNames, Step } from "./step";
-import { Pipeline } from "@/lib/objects";
+import { getConverter, listConnectorNames as listConvertorNames, Step } from "./step";
+import { Pipeline, PipelineStepConfig } from "@/lib/objects";
 import { usePipelineStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
 
@@ -49,11 +49,37 @@ export function StepView({
         fileInput.click();
     }
 
+    function exportFile() {
+        console.log("Exporting file...");
+        var pipeline = usePipelineStore.getState().pipeline;
+        if (pipeline.name === undefined || pipeline.name === "") {
+            pipeline.name = "pipeline";
+        }
+        var blob = new Blob([JSON.stringify(pipeline)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "pipeline.json";
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
     function appendStep() {
+
+        const name = listConvertorNames()[0]
+        const config = getConverter(name)
+
         var newStep = {
             id: uuidv4(),
-            name: listConnectorNames()[0],
-            config: {} as Record<string, any>,
+            name: name,
+            config: config.config?.map((item) => {
+                return {
+                    name: item.name,
+                    type: item.type,
+                    default: item.default,
+                    value: item.default,
+                } as PipelineStepConfig
+            }) ?? [],
         };
         usePipelineStore.getState().addStep(newStep);
     }
@@ -68,6 +94,7 @@ export function StepView({
                         <div className="flex flex-col items-start justify-center mx-4 py-0">
                             <input type="text" placeholder="Pipeline Name" className="border-1 rounded-md p-2"
                                 value={pipelineInput.name}
+                                id="pipeline-name"
                                 onChange={(e) => {
                                     pipelineInput.name = e.target.value;
                                     usePipelineStore.getState().replacePipeline(pipelineInput)
@@ -87,7 +114,7 @@ export function StepView({
                             </Button>
                         </div>
                         <div className="flex flex-col items-start justify-center py-0">
-                            <Button>
+                            <Button onClick={(_) => exportFile()}>
                                 <FileUp />Export
                             </Button>
                         </div>

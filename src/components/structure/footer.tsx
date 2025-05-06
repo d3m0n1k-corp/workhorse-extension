@@ -8,7 +8,9 @@ export function Footer() {
                     <span className="text-sm flex-col items-center">©2025 Gagandeep Singh Bhambrah. All Rights Reserved.</span>
                 </div>
                 <span className="flex-col items-center">
-                    <Github size={18} />
+                    <a href="https://github.com/d3m0n1k-corp/workhorse-extension">
+                        <Github size={18} />
+                    </a>
                 </span>
             </div>
         </footer >
