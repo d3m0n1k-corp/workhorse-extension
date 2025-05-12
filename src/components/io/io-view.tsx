@@ -2,7 +2,7 @@ import { useState } from "react";
 import { InputBox } from "./input";
 import { OutputBox } from "./output";
 import { chain_execute } from "@/wasm/operations";
-import { Pipeline } from "@/lib/objects";
+import { Pipeline, PipelineStep } from "@/lib/objects";
 
 function executor(pipeline: Pipeline, input: string) {
     console.log("Executing chain with input: ", input)
@@ -10,10 +10,10 @@ function executor(pipeline: Pipeline, input: string) {
         console.error("No steps in pipeline")
         return
     }
-    const chain_in: ChainRequest[] = pipeline.steps.map((step) => {
+    const chain_in: ChainRequest[] = pipeline.steps.map((step: PipelineStep) => {
         return {
             name: step.name,
-            config_json: JSON.stringify(step.config)
+            config_json: "{}"
         }
     })
     const response = chain_execute(chain_in, input || "{}")

@@ -29,17 +29,17 @@ export function StepView({
 
     function importFile() {
         console.log("Importing file...");
-        var fileInput = document.createElement("input");
+        const fileInput = document.createElement("input");
         fileInput.type = "file";
         fileInput.accept = ".json";
         fileInput.onchange = (e) => {
-            var file = (e.target as HTMLInputElement).files?.[0];
+            const file = (e.target as HTMLInputElement).files?.[0];
             if (file) {
-                var reader = new FileReader();
+                const reader = new FileReader();
                 reader.onload = (e) => {
-                    var content = e.target?.result;
+                    const content = e.target?.result;
                     if (content) {
-                        var pipeline = JSON.parse(content as string);
+                        const pipeline = JSON.parse(content as string);
                         usePipelineStore.getState().replacePipeline(pipeline);
                     }
                 };
@@ -51,13 +51,13 @@ export function StepView({
 
     function exportFile() {
         console.log("Exporting file...");
-        var pipeline = usePipelineStore.getState().pipeline;
+        const pipeline = usePipelineStore.getState().pipeline;
         if (pipeline.name === undefined || pipeline.name === "") {
             pipeline.name = "pipeline";
         }
-        var blob = new Blob([JSON.stringify(pipeline)], { type: "application/json" });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
+        const blob = new Blob([JSON.stringify(pipeline)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
         a.href = url;
         a.download = "pipeline.json";
         a.click();
@@ -69,7 +69,7 @@ export function StepView({
         const name = listConvertorNames()[0]
         const config = getConverter(name)
 
-        var newStep = {
+        const newStep = {
             id: uuidv4(),
             name: name,
             config: config.config?.map((item) => {
@@ -109,12 +109,12 @@ export function StepView({
                     </div>
                     <div className="flex flex-row ">
                         <div className="flex flex-col items-start justify-center py-0">
-                            <Button onClick={(_) => importFile()}>
+                            <Button onClick={() => importFile()}>
                                 <FileDown />Import
                             </Button>
                         </div>
                         <div className="flex flex-col items-start justify-center py-0">
-                            <Button onClick={(_) => exportFile()}>
+                            <Button onClick={() => exportFile()}>
                                 <FileUp />Export
                             </Button>
                         </div>
@@ -124,7 +124,7 @@ export function StepView({
                     {populateSteps()}
                 </div>
                 <div className="grow flex flex-col items-center justify-center min-w-full">
-                    <Button className="w-20" onClick={(_) => appendStep()}>
+                    <Button className="w-20" onClick={() => appendStep()}>
                         <Plus />
                     </Button>
                 </div>

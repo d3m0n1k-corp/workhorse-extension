@@ -1,15 +1,15 @@
 export function list_converters() {
     const converter_list_json = window.list_converters();
-    const conv_list: ConverterDiscoveryResponse = JSON.parse(converter_list_json);
-    if (conv_list.Error) {
-        console.error(conv_list.Error);
+    const result: WasmResponse<Converter[]> = JSON.parse(converter_list_json);
+    if (result.Error) {
+        console.error(result.Error);
     }
-    return conv_list;
+    return result;
 }
 
 export function execute_converter(conv_name: string, input: string, config: string) {
     const result_json = window.execute_converter(conv_name, input, config);
-    var result: ConverterExecutionResponse = JSON.parse(result_json);
+    const result: WasmResponse<string> = JSON.parse(result_json);
     if (result.Error) {
         console.error(result.Error);
     }
@@ -18,7 +18,8 @@ export function execute_converter(conv_name: string, input: string, config: stri
 
 export function chain_execute(chain: ChainRequest[], input: string) {
     const chain_json = window.chain_execute(JSON.stringify(chain), input);
-    var result: ChainResponse = JSON.parse(chain_json);
+    console.log("Chain JSON: ", chain_json);
+    const result: WasmResponse<ChainResult[]> = JSON.parse(chain_json);
     if (result.Error) {
         console.error(result.Error);
     }

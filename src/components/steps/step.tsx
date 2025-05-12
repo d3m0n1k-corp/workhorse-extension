@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils"
 import { PipelineStep } from "@/lib/objects"
 import { usePipelineStore } from "@/lib/store"
 
-var converter_list: Converter[] = []
+let converter_list: Converter[] = []
 
 export function listConverters() {
     if (converter_list.length === 0) {
-        var conv_list_json = localStorage.getItem("converter_list") || "[]"
+        const conv_list_json = localStorage.getItem("converter_list") || "[]"
         converter_list = JSON.parse(conv_list_json)
     }
     return converter_list

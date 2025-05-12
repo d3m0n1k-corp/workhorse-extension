@@ -11,6 +11,7 @@ async function initialize() {
 
 async function initializeWasmModule() {
     const go = new window.Go();
+    console.log("Type of go: ", typeof go);
     const result = await WebAssembly.instantiateStreaming(fetch("workhorse.wasm"), go.importObject);
     go.run(result.instance);
 }
@@ -56,7 +57,7 @@ async function test() {
     console.log(result);
 }
 
-export const LoadWasm: React.FC<React.PropsWithChildren<{}>> = (props) => {
+export const LoadWasm: React.FC<React.PropsWithChildren<object>> = (props) => {
     const [isLoading, setIsLoading] = React.useState(true);
 
     useEffect(() => {
