@@ -7,30 +7,7 @@ import { CommandInput } from "cmdk"
 import { cn } from "@/lib/utils"
 import { PipelineStep } from "@/lib/objects"
 import { usePipelineStore } from "@/lib/store"
-
-let converter_list: Converter[] = []
-
-export function listConverters() {
-    if (converter_list.length === 0) {
-        const conv_list_json = localStorage.getItem("converter_list") || "[]"
-        converter_list = JSON.parse(conv_list_json)
-    }
-    return converter_list
-}
-
-export function listConnectorNames() {
-    return listConverters().map((item) => item.name).flat()
-}
-
-export function getConverter(name: string) {
-    const conv_list = listConverters()
-    const converter = conv_list.find((item) => item.name === name)
-    if (converter) {
-        return converter
-    } else {
-        throw new Error("Converter not found")
-    }
-}
+import { DatabaseManager } from "@/lib/db"
 
 export function Step({
     step,
@@ -48,35 +25,7 @@ export function Step({
                 <div className="flex flex-row">
                     <div className="flex flex-row mx-5">
                         <div className="flex flex-col justify-center mx-2">
-                            <Popover open={open} onOpenChange={setOpen}>
-                                <PopoverTrigger asChild>
-                                    <ChevronDown size={18} role="combobox" aria-expanded={open} />
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                    <Command>
-                                        <CommandInput placeholder="Search Converter" />
-                                        <CommandList>
-                                            <CommandGroup>
-                                                {listConnectorNames().map((item) => {
-                                                    return (
-                                                        <CommandItem key={item} onSelect={() => {
-                                                            step.name = item
-                                                            usePipelineStore.getState().updateStep(step.id, step)
-                                                            setOpen(false)
-                                                        }}>
-                                                            {item}
-                                                            <Check className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                step.name === item ? "opacity-100" : "opacity-0"
-                                                            )} />
-                                                        </CommandItem>
-                                                    )
-                                                })}
-                                            </CommandGroup>
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
+                            {ConverterSelectionPopover(open, setOpen, step)}
                         </div>
                         <div className="flex flex-col justify-center">
                             <Settings size={18} />
@@ -91,4 +40,36 @@ export function Step({
             </div>
         </div >
     )
+}
+
+async function ConverterSelectionPopover(open: boolean, setOpen: (open: boolean) => void, step: PipelineStep) {
+    return <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+            <ChevronDown size={18} role="combobox" aria-expanded={open} />
+        </PopoverTrigger>
+        <PopoverContent>
+            <Command>
+                <CommandInput placeholder="Search Converter" />
+                <CommandList>
+                    <CommandGroup>
+                        {(await DatabaseManager.listConverterNames()).map((item) => {
+                            return (
+                                <CommandItem key={item} onSelect={() => {
+                                    step.name = item
+                                    usePipelineStore.getState().updateStep(step.id, step)
+                                    setOpen(false)
+                                }}>
+                                    {item}
+                                    <Check className={cn(
+                                        "mr-2 h-4 w-4",
+                                        step.name === item ? "opacity-100" : "opacity-0"
+                                    )} />
+                                </CommandItem>
+                            )
+                        })}
+                    </CommandGroup>
+                </CommandList>
+            </Command>
+        </PopoverContent>
+    </Popover>
 }

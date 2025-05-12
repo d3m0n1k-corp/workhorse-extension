@@ -1,9 +1,10 @@
 import { FileDown, FileUp, MoveDown, Plus, Save } from "lucide-react";
 import { Button } from "../ui/button";
-import { getConverter, listConnectorNames as listConvertorNames, Step } from "./step";
+import { Step } from "./step";
 import { Pipeline, PipelineStepConfig } from "@/lib/objects";
 import { usePipelineStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
+import { DatabaseManager } from "@/lib/db";
 
 
 
@@ -64,14 +65,12 @@ export function StepView({
         URL.revokeObjectURL(url);
     }
 
-    function appendStep() {
+    async function appendStep() {
 
-        const name = listConvertorNames()[0]
-        const config = getConverter(name)
-
+        const config = await DatabaseManager.getFirstConverterDefinition();
         const newStep = {
             id: uuidv4(),
-            name: name,
+            name: config.name,
             config: config.config?.map((item) => {
                 return {
                     name: item.name,
