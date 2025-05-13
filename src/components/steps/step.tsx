@@ -1,6 +1,6 @@
 import { Popover } from "@radix-ui/react-popover"
 import { Check, ChevronDown, Settings, Trash2 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Command, CommandGroup, CommandItem, CommandList } from "../ui/command"
 import { CommandInput } from "cmdk"
@@ -42,7 +42,13 @@ export function Step({
     )
 }
 
-async function ConverterSelectionPopover(open: boolean, setOpen: (open: boolean) => void, step: PipelineStep) {
+function ConverterSelectionPopover(open: boolean, setOpen: (open: boolean) => void, step: PipelineStep) {
+    const [converterNameList, setConverterNameList] = useState<string[]>([]);
+    useEffect(() => {
+        DatabaseManager.converter.listConverterNames().then((list) => {
+            setConverterNameList(list);
+        });
+    }, [])
     return <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
             <ChevronDown size={18} role="combobox" aria-expanded={open} />
@@ -52,7 +58,7 @@ async function ConverterSelectionPopover(open: boolean, setOpen: (open: boolean)
                 <CommandInput placeholder="Search Converter" />
                 <CommandList>
                     <CommandGroup>
-                        {(await DatabaseManager.converter.listConverterNames()).map((item) => {
+                        {converterNameList.map((item) => {
                             return (
                                 <CommandItem key={item} onSelect={() => {
                                     step.name = item

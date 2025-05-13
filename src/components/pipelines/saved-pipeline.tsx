@@ -1,4 +1,5 @@
-import { Pencil, Play, Trash2 } from "lucide-react"
+import { deletePipeline } from "@/services/saved-pipelines"
+import { Play, Star, Trash2 } from "lucide-react"
 
 export function SavedPipeline({
     id,
@@ -21,10 +22,9 @@ export function SavedPipeline({
                 <div><Play size={15} /></div>
                 <div>
                     <div className="flex flex-row justify-between">
-                        <Pencil size={15} />
-
+                        <Star size={15} />
                         <span className="w-1" />
-                        <Trash2 size={15} />
+                        <Trash2 size={15} onClick={async () => await deletePipeline(id)} />
                     </div>
                 </div>
             </div>

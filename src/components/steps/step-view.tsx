@@ -5,7 +5,63 @@ import { Pipeline, PipelineStepConfig } from "@/lib/objects";
 import { usePipelineStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
 import { DatabaseManager } from "@/lib/db/manager";
+import { savePipeline } from "@/services/saved-pipelines";
 
+
+function importFile() {
+    console.log("Importing file...");
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".json";
+    fileInput.onchange = (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target?.result;
+                if (content) {
+                    const pipeline = JSON.parse(content as string);
+                    usePipelineStore.getState().replacePipeline(pipeline);
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+    fileInput.click();
+}
+
+function exportFile() {
+    console.log("Exporting file...");
+    const pipeline = usePipelineStore.getState().pipeline;
+    if (pipeline.name === undefined || pipeline.name === "") {
+        pipeline.name = "pipeline";
+    }
+    const blob = new Blob([JSON.stringify(pipeline)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "pipeline.json";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+async function appendStep() {
+
+    const config = await DatabaseManager.converter.getFirstConverterDefinition();
+    const newStep = {
+        id: uuidv4(),
+        name: config.name,
+        config: config.config?.map((item) => {
+            return {
+                name: item.name,
+                type: item.type,
+                default: item.default,
+                value: item.default,
+            } as PipelineStepConfig
+        }) ?? [],
+    };
+    usePipelineStore.getState().addStep(newStep);
+}
 
 
 export function StepView({
@@ -28,62 +84,6 @@ export function StepView({
         )
     }
 
-    function importFile() {
-        console.log("Importing file...");
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.accept = ".json";
-        fileInput.onchange = (e) => {
-            const file = (e.target as HTMLInputElement).files?.[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const content = e.target?.result;
-                    if (content) {
-                        const pipeline = JSON.parse(content as string);
-                        usePipelineStore.getState().replacePipeline(pipeline);
-                    }
-                };
-                reader.readAsText(file);
-            }
-        };
-        fileInput.click();
-    }
-
-    function exportFile() {
-        console.log("Exporting file...");
-        const pipeline = usePipelineStore.getState().pipeline;
-        if (pipeline.name === undefined || pipeline.name === "") {
-            pipeline.name = "pipeline";
-        }
-        const blob = new Blob([JSON.stringify(pipeline)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "pipeline.json";
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    async function appendStep() {
-
-        const config = await DatabaseManager.converter.getFirstConverterDefinition();
-        const newStep = {
-            id: uuidv4(),
-            name: config.name,
-            config: config.config?.map((item) => {
-                return {
-                    name: item.name,
-                    type: item.type,
-                    default: item.default,
-                    value: item.default,
-                } as PipelineStepConfig
-            }) ?? [],
-        };
-        usePipelineStore.getState().addStep(newStep);
-    }
-
-
     return (
         <div className="grow flex flex-col items-start justify-center min-w-full">
             <div className="flex flex-col items-start justify-center min-w-full min-h-full">
@@ -95,13 +95,21 @@ export function StepView({
                                 value={pipelineInput.name}
                                 id="pipeline-name"
                                 onChange={(e) => {
-                                    pipelineInput.name = e.target.value;
-                                    usePipelineStore.getState().replacePipeline(pipelineInput)
+                                    usePipelineStore.getState().renamePipeline(e.target.value);
                                 }}
                             />
                         </div>
                         <div className="flex flex-col items-start justify-center py-0">
-                            <Button>
+                            <Button onClick={
+                                () => {
+                                    console.log("Saving pipeline...");
+                                    savePipeline(usePipelineStore.getState().pipeline).then(() => {
+                                        console.log("Pipeline saved");
+                                    }).catch((err) => {
+                                        console.error("Error saving pipeline", err);
+                                    })
+                                }
+                            }>
                                 <Save />Save Pipeline
                             </Button>
                         </div>
