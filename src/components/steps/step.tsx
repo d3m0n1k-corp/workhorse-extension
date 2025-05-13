@@ -1,13 +1,13 @@
-import { Popover } from '@radix-ui/react-popover';
-import { Check, ChevronDown, Settings, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Command, CommandGroup, CommandItem, CommandList } from '../ui/command';
-import { CommandInput } from 'cmdk';
-import { cn } from '@/lib/utils';
-import { PipelineStep } from '@/lib/objects';
-import { usePipelineStore } from '@/lib/store';
-import { DatabaseManager } from '@/lib/db/manager';
+import { Popover } from "@radix-ui/react-popover";
+import { Check, ChevronDown, Settings, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Command, CommandGroup, CommandItem, CommandList } from "../ui/command";
+import { CommandInput } from "cmdk";
+import { cn } from "@/lib/utils";
+import { PipelineStep } from "@/lib/objects";
+import { usePipelineStore } from "@/lib/store";
+import { DatabaseManager } from "@/lib/db/manager";
 
 export function Step({ step }: { step: PipelineStep }) {
   const [open, setOpen] = useState(false);
@@ -75,8 +75,8 @@ function ConverterSelectionPopover(
                     {item}
                     <Check
                       className={cn(
-                        'mr-2 h-4 w-4',
-                        step.name === item ? 'opacity-100' : 'opacity-0',
+                        "mr-2 h-4 w-4",
+                        step.name === item ? "opacity-100" : "opacity-0",
                       )}
                     />
                   </CommandItem>

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import '../../wasm/wasm_exec.js';
-import '../../wasm/wasm.d.ts';
-import { chain_execute, list_converters } from '@/wasm/operations.ts';
-import { DatabaseManager } from '@/lib/db/manager.ts';
+import React, { useEffect } from "react";
+import "../../wasm/wasm_exec.js";
+import "../../wasm/wasm.d.ts";
+import { chain_execute, list_converters } from "@/wasm/operations.ts";
+import { DatabaseManager } from "@/lib/db/manager.ts";
 
 async function initialize() {
   await initializeWasmModule();
@@ -12,9 +12,9 @@ async function initialize() {
 
 async function initializeWasmModule() {
   const go = new window.Go();
-  console.log('Type of go: ', typeof go);
+  console.log("Type of go: ", typeof go);
   const result = await WebAssembly.instantiateStreaming(
-    fetch('workhorse.wasm'),
+    fetch("workhorse.wasm"),
     go.importObject,
   );
   go.run(result.instance);
@@ -30,21 +30,21 @@ async function initializeApplication() {
 async function test() {
   const chain: ChainRequest[] = [
     {
-      name: 'json_to_yaml',
-      config_json: '{}',
+      name: "json_to_yaml",
+      config_json: "{}",
     },
     {
-      name: 'yaml_to_json',
+      name: "yaml_to_json",
       config_json: JSON.stringify({
         indent_size: 1,
-        indent_type: 'tab',
+        indent_type: "tab",
       }),
     },
     {
-      name: 'json_prettifier',
+      name: "json_prettifier",
       config_json: JSON.stringify({
         indent_size: 1,
-        indent_type: 'tab',
+        indent_type: "tab",
       }),
     },
   ];

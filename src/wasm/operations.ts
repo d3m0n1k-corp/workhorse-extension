@@ -22,7 +22,7 @@ export function execute_converter(
 
 export function chain_execute(chain: ChainRequest[], input: string) {
   const chain_json = window.chain_execute(JSON.stringify(chain), input);
-  console.log('Chain JSON: ', chain_json);
+  console.log("Chain JSON: ", chain_json);
   const result: WasmResponse<ChainResult[]> = JSON.parse(chain_json);
   if (result.Error) {
     console.error(result.Error);

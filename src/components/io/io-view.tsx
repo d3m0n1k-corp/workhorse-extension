@@ -1,22 +1,22 @@
-import { useState } from 'react';
-import { InputBox } from './input';
-import { OutputBox } from './output';
-import { chain_execute } from '@/wasm/operations';
-import { Pipeline, PipelineStep } from '@/lib/objects';
+import { useState } from "react";
+import { InputBox } from "./input";
+import { OutputBox } from "./output";
+import { chain_execute } from "@/wasm/operations";
+import { Pipeline, PipelineStep } from "@/lib/objects";
 
 function executor(pipeline: Pipeline, input: string) {
-  console.log('Executing chain with input: ', input);
+  console.log("Executing chain with input: ", input);
   if (pipeline.steps.length === 0) {
-    console.error('No steps in pipeline');
+    console.error("No steps in pipeline");
     return;
   }
   const chain_in: ChainRequest[] = pipeline.steps.map((step: PipelineStep) => {
     return {
       name: step.name,
-      config_json: '{}',
+      config_json: "{}",
     };
   });
-  const response = chain_execute(chain_in, input || '{}');
+  const response = chain_execute(chain_in, input || "{}");
   if (response.Error) {
     console.error(response.Error);
   }
@@ -24,9 +24,9 @@ function executor(pipeline: Pipeline, input: string) {
   return response.Result[response.Result.length - 1].output;
 }
 
-export function IOView({ className = '' }: { className?: string }) {
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
+export function IOView({ className = "" }: { className?: string }) {
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
 
   return (
     <div className={`${className}`}>

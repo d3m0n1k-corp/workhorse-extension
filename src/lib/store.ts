@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { Pipeline, PipelineObject, PipelineStep } from './objects';
+import { create } from "zustand";
+import { Pipeline, PipelineObject, PipelineStep } from "./objects";
 
 type PipelineStore = {
   pipeline: Pipeline;
@@ -12,7 +12,7 @@ type PipelineStore = {
 
 export const usePipelineStore = create<PipelineStore>()((set) => ({
   pipeline: {
-    name: '',
+    name: "",
     steps: [],
   },
 

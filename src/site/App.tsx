@@ -1,8 +1,8 @@
-import { IOView } from '@/components/io/io-view';
-import './App.css';
-import { PipelineView } from '@/components/pipelines/pipeline-view';
-import { StepView } from '@/components/steps/step-view';
-import { usePipelineStore, useSavedPipelineStore } from '@/lib/store';
+import { IOView } from "@/components/io/io-view";
+import "./App.css";
+import { PipelineView } from "@/components/pipelines/pipeline-view";
+import { StepView } from "@/components/steps/step-view";
+import { usePipelineStore, useSavedPipelineStore } from "@/lib/store";
 
 function App() {
   const pipeline = usePipelineStore((state) => state.pipeline);

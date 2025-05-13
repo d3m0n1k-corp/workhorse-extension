@@ -1,6 +1,6 @@
-import { ConverterDBManager } from './converter';
-import { PipelineDbManager } from './pipeline';
-import { StepDbManager } from './pipeline_step';
+import { ConverterDBManager } from "./converter";
+import { PipelineDbManager } from "./pipeline";
+import { StepDbManager } from "./pipeline_step";
 
 class DbManager {
   readonly converter: ConverterDBManager;

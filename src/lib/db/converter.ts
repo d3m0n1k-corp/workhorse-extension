@@ -1,7 +1,7 @@
-const RO = 'readonly';
-const RW = 'readwrite';
+const RO = "readonly";
+const RW = "readwrite";
 
-const CONVERTER_DB_NAME = 'converter_db';
+const CONVERTER_DB_NAME = "converter_db";
 const CONVERTER_DB_VERSION = 1;
 
 async function ConverterDB() {
@@ -10,7 +10,7 @@ async function ConverterDB() {
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains(CONVERTER_DB_NAME)) {
-        db.createObjectStore(CONVERTER_DB_NAME, { keyPath: 'name' });
+        db.createObjectStore(CONVERTER_DB_NAME, { keyPath: "name" });
       }
     };
     request.onsuccess = () => {
@@ -18,7 +18,7 @@ async function ConverterDB() {
       resolve(db);
     };
     request.onerror = (event) => {
-      console.error('Error opening converter database:', event);
+      console.error("Error opening converter database:", event);
       reject(event);
     };
   });
@@ -34,7 +34,7 @@ export class ConverterDBManager {
   private async init() {
     const converterDB = await ConverterDB();
     if (!converterDB) {
-      throw new Error('Failed to open database converter_db');
+      throw new Error("Failed to open database converter_db");
     }
     this.converterDB = converterDB;
   }
@@ -50,7 +50,7 @@ export class ConverterDBManager {
         resolve(request.result);
       };
       request.onerror = (event) => {
-        console.error('Error getting converter definition:', event);
+        console.error("Error getting converter definition:", event);
         reject(event);
       };
     });
@@ -67,7 +67,7 @@ export class ConverterDBManager {
         resolve(request.result);
       };
       request.onerror = (event) => {
-        console.error('Error listing converter definitions:', event);
+        console.error("Error listing converter definitions:", event);
         reject(event);
       };
     });
@@ -88,7 +88,7 @@ export class ConverterDBManager {
             resolve(getRequest.result);
           };
           getRequest.onerror = (event) => {
-            console.error('Error getting first converter definition:', event);
+            console.error("Error getting first converter definition:", event);
             reject(event);
           };
         } else {
@@ -96,7 +96,7 @@ export class ConverterDBManager {
         }
       };
       request.onerror = (event) => {
-        console.error('Error getting first converter definition:', event);
+        console.error("Error getting first converter definition:", event);
         reject(event);
       };
     });
@@ -113,7 +113,7 @@ export class ConverterDBManager {
         resolve(request.result as string[]);
       };
       request.onerror = (event) => {
-        console.error('Error listing converter names:', event);
+        console.error("Error listing converter names:", event);
         reject(event);
       };
     });
@@ -130,7 +130,7 @@ export class ConverterDBManager {
           resolve();
         })
         .catch((error) => {
-          console.error('Error overwriting converter definitions:', error);
+          console.error("Error overwriting converter definitions:", error);
           reject(error);
         });
     });
@@ -147,7 +147,7 @@ export class ConverterDBManager {
         resolve();
       };
       request.onerror = (event) => {
-        console.error('Error adding converter definition:', event);
+        console.error("Error adding converter definition:", event);
         reject(event);
       };
     });
@@ -164,7 +164,7 @@ export class ConverterDBManager {
         resolve();
       };
       request.onerror = (event) => {
-        console.error('Error clearing converter definitions:', event);
+        console.error("Error clearing converter definitions:", event);
         reject(event);
       };
     });

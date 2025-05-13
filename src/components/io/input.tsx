@@ -1,6 +1,6 @@
-import { Pipeline } from '@/lib/objects';
-import { usePipelineStore } from '@/lib/store';
-import { Clipboard, File } from 'lucide-react';
+import { Pipeline } from "@/lib/objects";
+import { usePipelineStore } from "@/lib/store";
+import { Clipboard, File } from "lucide-react";
 
 export function InputBox({
   input,
@@ -33,7 +33,7 @@ export function InputBox({
             setInput(e.target.value);
             setOutput(
               executor(usePipelineStore.getState().pipeline, e.target.value) ||
-                '',
+                "",
             );
           }}
         />

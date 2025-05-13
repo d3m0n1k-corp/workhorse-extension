@@ -1,10 +1,10 @@
-import { EmptyHeader } from './empty-header';
-import { CodeXml } from 'lucide-react';
+import { EmptyHeader } from "./empty-header";
+import { CodeXml } from "lucide-react";
 
 export function Header({ className }: { className?: string }) {
   return (
     <EmptyHeader
-      className={'mx-10 my-3 ' + className}
+      className={"mx-10 my-3 " + className}
       heading={
         <span className="inline-flex">
           <CodeXml size={42} />

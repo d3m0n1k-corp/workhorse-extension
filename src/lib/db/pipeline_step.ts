@@ -1,9 +1,9 @@
-import { PipelineStepDbObject } from '../objects';
+import { PipelineStepDbObject } from "../objects";
 
-const PIPELINE_STEP_DB_NAME = 'pipeline_step_db';
+const PIPELINE_STEP_DB_NAME = "pipeline_step_db";
 const PIPELINE_STEP_DB_VERSION = 1;
-const RO = 'readonly';
-const PIPELINE_ID_INDEX = 'pipeline_id';
+const RO = "readonly";
+const PIPELINE_ID_INDEX = "pipeline_id";
 
 async function PipelineStepDB() {
   return new Promise<IDBDatabase | undefined>((resolve, reject) => {
@@ -15,7 +15,7 @@ async function PipelineStepDB() {
       const db = request.result;
       if (!db.objectStoreNames.contains(PIPELINE_STEP_DB_NAME)) {
         db.createObjectStore(PIPELINE_STEP_DB_NAME, {
-          keyPath: 'id',
+          keyPath: "id",
         }).createIndex(PIPELINE_ID_INDEX, PIPELINE_ID_INDEX, { unique: false });
       }
     };
@@ -24,7 +24,7 @@ async function PipelineStepDB() {
       resolve(db);
     };
     request.onerror = (event) => {
-      console.error('Error opening step database:', event);
+      console.error("Error opening step database:", event);
       reject(event);
     };
   });
@@ -41,7 +41,7 @@ export class StepDbManager {
   private async init() {
     const stepDB = await PipelineStepDB();
     if (!stepDB) {
-      throw new Error('Failed to open database pipeline_step_db');
+      throw new Error("Failed to open database pipeline_step_db");
     }
     this.stepDB = stepDB;
   }
@@ -79,7 +79,7 @@ export class StepDbManager {
       };
 
       request.onerror = (event) => {
-        console.error('Error listing steps:', event);
+        console.error("Error listing steps:", event);
         reject(event);
       };
     });
@@ -98,7 +98,7 @@ export class StepDbManager {
       };
 
       request.onerror = (event) => {
-        console.error('Error counting steps:', event);
+        console.error("Error counting steps:", event);
         reject(event);
       };
     });
@@ -107,7 +107,7 @@ export class StepDbManager {
   public async createSteps(steps: PipelineStepDbObject[]) {
     return new Promise<void>((resolve, reject) => {
       const store = this.stepDB
-        .transaction(PIPELINE_STEP_DB_NAME, 'readwrite')
+        .transaction(PIPELINE_STEP_DB_NAME, "readwrite")
         .objectStore(PIPELINE_STEP_DB_NAME);
 
       const requests = steps.map((step) => {
@@ -115,7 +115,7 @@ export class StepDbManager {
           const request = store.add(step);
           request.onsuccess = () => res();
           request.onerror = (event) => {
-            console.error('Error creating step:', event);
+            console.error("Error creating step:", event);
             rej(event);
           };
         });
@@ -149,7 +149,7 @@ export class StepDbManager {
       };
 
       request.onerror = (event) => {
-        console.error('Error getting steps:', event);
+        console.error("Error getting steps:", event);
         reject(event);
       };
     });
@@ -158,7 +158,7 @@ export class StepDbManager {
   async deleteSteps(pipeline_id: string) {
     return await new Promise<void>((resolve, reject) => {
       const store = this.stepDB
-        .transaction(PIPELINE_STEP_DB_NAME, 'readwrite')
+        .transaction(PIPELINE_STEP_DB_NAME, "readwrite")
         .objectStore(PIPELINE_STEP_DB_NAME);
 
       const index = store.index(PIPELINE_ID_INDEX);
@@ -174,12 +174,12 @@ export class StepDbManager {
           cursor.continue();
         };
         deleteRequest.onerror = (event) => {
-          console.error('Error deleting step:', event);
+          console.error("Error deleting step:", event);
           reject(event);
         };
       };
       request.onerror = (event) => {
-        console.error('Error deleting steps:', event);
+        console.error("Error deleting steps:", event);
         reject(event);
       };
     });

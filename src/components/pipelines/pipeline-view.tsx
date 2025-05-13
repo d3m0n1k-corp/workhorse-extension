@@ -1,8 +1,8 @@
-import { PipelineGrid } from './pipeline-grid';
-import { SavedPipeline } from './saved-pipeline';
-import { useEffect } from 'react';
-import { getPipelineObjects } from '@/services/saved-pipelines';
-import { PipelineObject } from '@/lib/objects';
+import { PipelineGrid } from "./pipeline-grid";
+import { SavedPipeline } from "./saved-pipeline";
+import { useEffect } from "react";
+import { getPipelineObjects } from "@/services/saved-pipelines";
+import { PipelineObject } from "@/lib/objects";
 
 export function PipelineView({
   className,

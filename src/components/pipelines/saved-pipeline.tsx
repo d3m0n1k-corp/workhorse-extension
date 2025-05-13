@@ -1,5 +1,5 @@
-import { deletePipeline } from '@/services/saved-pipelines';
-import { Play, Star, Trash2 } from 'lucide-react';
+import { deletePipeline } from "@/services/saved-pipelines";
+import { Play, Star, Trash2 } from "lucide-react";
 
 export function SavedPipeline({
   id,

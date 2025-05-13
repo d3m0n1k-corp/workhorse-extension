@@ -9,9 +9,9 @@ export function EmptyHeader({
   heading,
   text,
   children,
-  className = '',
+  className = "",
 }: EmptyHeaderProps) {
-  className = 'flex items-center justify-between px-2 ' + className;
+  className = "flex items-center justify-between px-2 " + className;
   return (
     <div className={className}>
       <div className="grid gap-1">

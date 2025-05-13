@@ -1,4 +1,4 @@
-import { Copy, Download } from 'lucide-react';
+import { Copy, Download } from "lucide-react";
 
 export function OutputBox({ output }: { output: string }) {
   return (

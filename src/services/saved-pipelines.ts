@@ -1,13 +1,13 @@
-import { DatabaseManager } from '@/lib/db/manager';
+import { DatabaseManager } from "@/lib/db/manager";
 import {
   Pipeline,
   PipelineDbObject,
   PipelineObject,
   PipelineStep,
   PipelineStepDbObject,
-} from '@/lib/objects';
-import { usePipelineStore, useSavedPipelineStore } from '@/lib/store';
-import { v4 } from 'uuid';
+} from "@/lib/objects";
+import { usePipelineStore, useSavedPipelineStore } from "@/lib/store";
+import { v4 } from "uuid";
 
 export async function getPipelineObjects(offset: number, size: number) {
   const pipelines = await DatabaseManager.pipeline.listPipelines(offset, size);
@@ -36,8 +36,8 @@ export async function savePipeline(pipeline: Pipeline) {
     } as PipelineStepDbObject;
   });
 
-  console.log('Saving pipeline into the database', pipelineDbObject);
-  console.log('Saving steps into the database', dbSteps);
+  console.log("Saving pipeline into the database", pipelineDbObject);
+  console.log("Saving steps into the database", dbSteps);
   await DatabaseManager.pipeline.createPipeline(pipelineDbObject);
   await DatabaseManager.step.createSteps(dbSteps);
   useSavedPipelineStore.getState().addSavedPipeline({
@@ -50,7 +50,7 @@ export async function savePipeline(pipeline: Pipeline) {
 export async function loadPipeline(id: string) {
   const pipeline = await DatabaseManager.pipeline.getPipeline(id);
   if (!pipeline) {
-    throw new Error('Pipeline not found');
+    throw new Error("Pipeline not found");
   }
   const dbSteps = await DatabaseManager.step.getSteps(id);
 

@@ -1,9 +1,9 @@
-import { PipelineDbObject } from '../objects';
+import { PipelineDbObject } from "../objects";
 
-const PIPELINE_DB_NAME = 'pipeline_db';
+const PIPELINE_DB_NAME = "pipeline_db";
 const PIPELINE_DB_VERSION = 1;
 
-const RO = 'readonly';
+const RO = "readonly";
 
 async function PipelineDB() {
   return new Promise<IDBDatabase | undefined>((resolve, reject) => {
@@ -11,7 +11,7 @@ async function PipelineDB() {
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains(PIPELINE_DB_NAME)) {
-        db.createObjectStore(PIPELINE_DB_NAME, { keyPath: 'id' });
+        db.createObjectStore(PIPELINE_DB_NAME, { keyPath: "id" });
       }
     };
     request.onsuccess = () => {
@@ -19,7 +19,7 @@ async function PipelineDB() {
       resolve(db);
     };
     request.onerror = (event) => {
-      console.error('Error opening pipeline database:', event);
+      console.error("Error opening pipeline database:", event);
       reject(event);
     };
   });
@@ -36,7 +36,7 @@ export class PipelineDbManager {
   private async init() {
     const pipelineDB = await PipelineDB();
     if (!pipelineDB) {
-      throw new Error('Failed to open database pipeline_db');
+      throw new Error("Failed to open database pipeline_db");
     }
     this.pipelineDB = pipelineDB;
   }
@@ -72,7 +72,7 @@ export class PipelineDbManager {
       };
 
       request.onerror = (event) => {
-        console.error('Error getting paginated pipeline definitions:', event);
+        console.error("Error getting paginated pipeline definitions:", event);
         reject(event);
       };
     });
@@ -81,7 +81,7 @@ export class PipelineDbManager {
   async createPipeline(pipeline: PipelineDbObject) {
     return new Promise<void>((resolve, reject) => {
       const store = this.pipelineDB
-        .transaction(PIPELINE_DB_NAME, 'readwrite')
+        .transaction(PIPELINE_DB_NAME, "readwrite")
         .objectStore(PIPELINE_DB_NAME);
 
       const request = store.add(pipeline);
@@ -89,7 +89,7 @@ export class PipelineDbManager {
         resolve();
       };
       request.onerror = (event) => {
-        console.error('Error creating pipeline definition:', event);
+        console.error("Error creating pipeline definition:", event);
         reject(event);
       };
     });
@@ -106,7 +106,7 @@ export class PipelineDbManager {
         resolve(request.result);
       };
       request.onerror = (event) => {
-        console.error('Error getting pipeline definition:', event);
+        console.error("Error getting pipeline definition:", event);
         reject(event);
       };
     });
@@ -115,7 +115,7 @@ export class PipelineDbManager {
   async deletePipeline(id: string) {
     return await new Promise<void>((resolve, reject) => {
       const store = this.pipelineDB
-        .transaction(PIPELINE_DB_NAME, 'readwrite')
+        .transaction(PIPELINE_DB_NAME, "readwrite")
         .objectStore(PIPELINE_DB_NAME);
 
       const request = store.delete(id);
@@ -123,7 +123,7 @@ export class PipelineDbManager {
         resolve();
       };
       request.onerror = (event) => {
-        console.error('Error deleting pipeline definition:', event);
+        console.error("Error deleting pipeline definition:", event);
         reject(event);
       };
     });
