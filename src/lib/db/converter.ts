@@ -1,15 +1,10 @@
-//Indexed DB
 const RO = "readonly";
 const RW = "readwrite";
 
 const CONVERTER_DB_NAME = "converter_db"
 const CONVERTER_DB_VERSION = 1
 
-const PIPELINE_DB_NAME = "pipeline_db"
-const PIPELINE_DB_VERSION = 1
-
-
-export async function ConverterDB() {
+async function ConverterDB() {
 
     return new Promise<IDBDatabase | undefined>((resolve, reject) => {
         const request = indexedDB.open(CONVERTER_DB_NAME, CONVERTER_DB_VERSION)
@@ -30,44 +25,21 @@ export async function ConverterDB() {
     });
 }
 
-export async function PipelineDB() {
-    return new Promise<IDBDatabase | undefined>((resolve, reject) => {
-        const request = indexedDB.open(PIPELINE_DB_NAME, PIPELINE_DB_VERSION)
-        request.onupgradeneeded = () => {
-            const db = request.result
-            if (!db.objectStoreNames.contains(PIPELINE_DB_NAME)) {
-                db.createObjectStore(PIPELINE_DB_NAME, { keyPath: "id" })
-            }
-        }
-        request.onsuccess = () => {
-            const db = request.result
-            resolve(db)
-        }
-        request.onerror = (event) => {
-            console.error("Error opening pipeline database:", event)
-            reject(event)
-        }
-    });
-}
-
-class DBManager {
+export class ConverterDBManager {
     converterDB: IDBDatabase
-    pipelineDB: IDBDatabase
-
     constructor() {
         this.converterDB = null as unknown as IDBDatabase
-        this.pipelineDB = null as unknown as IDBDatabase
         this.init()
     }
+
     private async init() {
         const converterDB = await ConverterDB()
-        const pipelineDB = await PipelineDB()
-        if (!converterDB || !pipelineDB) {
-            throw new Error("Failed to open databases")
+        if (!converterDB) {
+            throw new Error("Failed to open database converter_db")
         }
         this.converterDB = converterDB
-        this.pipelineDB = pipelineDB
     }
+
     async getConverterDefinition(name: string) {
         return new Promise<Converter>((resolve, reject) => {
             const store = this
@@ -206,5 +178,3 @@ class DBManager {
     }
 
 }
-
-export const DatabaseManager = new DBManager()

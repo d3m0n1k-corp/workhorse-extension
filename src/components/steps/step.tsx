@@ -7,7 +7,7 @@ import { CommandInput } from "cmdk"
 import { cn } from "@/lib/utils"
 import { PipelineStep } from "@/lib/objects"
 import { usePipelineStore } from "@/lib/store"
-import { DatabaseManager } from "@/lib/db"
+import { DatabaseManager } from "@/lib/db/manager"
 
 export function Step({
     step,
@@ -52,7 +52,7 @@ async function ConverterSelectionPopover(open: boolean, setOpen: (open: boolean)
                 <CommandInput placeholder="Search Converter" />
                 <CommandList>
                     <CommandGroup>
-                        {(await DatabaseManager.listConverterNames()).map((item) => {
+                        {(await DatabaseManager.converter.listConverterNames()).map((item) => {
                             return (
                                 <CommandItem key={item} onSelect={() => {
                                     step.name = item

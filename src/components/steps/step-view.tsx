@@ -4,7 +4,7 @@ import { Step } from "./step";
 import { Pipeline, PipelineStepConfig } from "@/lib/objects";
 import { usePipelineStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
-import { DatabaseManager } from "@/lib/db";
+import { DatabaseManager } from "@/lib/db/manager";
 
 
 
@@ -67,7 +67,7 @@ export function StepView({
 
     async function appendStep() {
 
-        const config = await DatabaseManager.getFirstConverterDefinition();
+        const config = await DatabaseManager.converter.getFirstConverterDefinition();
         const newStep = {
             id: uuidv4(),
             name: config.name,

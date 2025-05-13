@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "../../wasm/wasm_exec.js";
 import "../../wasm/wasm.d.ts";
 import { chain_execute, list_converters } from "@/wasm/operations.ts";
-import { DatabaseManager } from "@/lib/db.ts";
+import { DatabaseManager } from "@/lib/db/manager.ts";
 
 async function initialize() {
     await initializeWasmModule();
@@ -21,7 +21,7 @@ async function initializeApplication() {
     const conv_list = list_converters();
     console.log(conv_list.Result);
     // localStorage.setItem("converter_list", JSON.stringify(conv_list.Result));
-    DatabaseManager.overwriteConverterDefinition(conv_list.Result);
+    DatabaseManager.converter.overwriteConverterDefinition(conv_list.Result);
 }
 
 async function test() {
