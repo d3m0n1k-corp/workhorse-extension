@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Pipeline, PipelineObject, PipelineStep } from "./objects";
+import { Pipeline, PipelineObject, PipelineStep, PipelineStepConfig } from "./objects";
 
 type PipelineStore = {
   pipeline: Pipeline;
@@ -7,6 +7,7 @@ type PipelineStore = {
   addStep: (step: PipelineStep) => void;
   removeStep: (id: string) => void;
   updateStep: (stepId: string, step: PipelineStep) => void;
+  updateStepConfig: (stepId: string, config: PipelineStepConfig) => void;
   renamePipeline: (name: string) => void;
 };
 
@@ -36,6 +37,25 @@ export const usePipelineStore = create<PipelineStore>()((set) => ({
       const steps = state.pipeline.steps.map((s) =>
         s.id === stepId ? step : s,
       );
+      return { pipeline: { ...state.pipeline, steps } };
+    }),
+  updateStepConfig: (stepId: string, config: PipelineStepConfig) =>
+    set((state) => {
+      const steps = state.pipeline.steps.map((s) => {
+        if (s.id === stepId) {
+          const step = { ...s };
+          const configIndex = step.config.findIndex(
+            (c) => c.name === config.name,
+          );
+          if (configIndex !== -1) {
+            step.config[configIndex] = config;
+          } else {
+            step.config.push(config);
+          }
+          return step;
+        }
+        return s;
+      });
       return { pipeline: { ...state.pipeline, steps } };
     }),
 }));
