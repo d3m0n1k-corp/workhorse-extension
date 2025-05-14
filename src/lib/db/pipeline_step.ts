@@ -85,13 +85,14 @@ export class StepDbManager {
     });
   }
 
-  public async countSteps(key: IDBValidKey) {
+  public async countSteps(pipeline_id: IDBValidKey) {
     return new Promise<number>((resolve, reject) => {
       const store = this.stepDB
         .transaction(PIPELINE_STEP_DB_NAME, RO)
         .objectStore(PIPELINE_STEP_DB_NAME);
 
-      const request = store.count(key);
+      const index = store.index(PIPELINE_ID_INDEX);
+      const request = index.count(IDBKeyRange.only(pipeline_id));
 
       request.onsuccess = () => {
         resolve(request.result);
