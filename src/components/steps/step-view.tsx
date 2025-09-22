@@ -1,88 +1,39 @@
-import { FileDown, FileUp, MoveDown, Plus, Save } from "lucide-react";
+import { MoveDown, Save } from "lucide-react";
 import { Button } from "../ui/button";
 import { Step } from "./step";
-import { Pipeline, PipelineStepConfig } from "@/lib/objects";
 import { usePipelineStore } from "@/lib/store";
-import { v4 as uuidv4 } from "uuid";
-import { DatabaseManager } from "@/lib/db/manager";
 import { savePipeline } from "@/services/saved-pipelines";
+import { ImportButton } from "./utility/import-btn";
+import { ExportButton } from "./utility/export-btn";
+import { AppendStep } from "./utility/append-step-btn";
+import { Pipeline } from "@/lib/objects";
 
-function importFile() {
-  console.log("Importing file...");
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = ".json";
-  fileInput.onchange = (e) => {
-    const file = (e.target as HTMLInputElement).files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target?.result;
-        if (content) {
-          const pipeline = JSON.parse(content as string);
-          usePipelineStore.getState().replacePipeline(pipeline);
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
-  fileInput.click();
+function StepList({ step, index, pipelineInput }: { step: any; index: number; pipelineInput: Pipeline }) {
+  return (
+    <>
+      <Step step={step} key={index} />
+      {
+        index < pipelineInput.steps.length - 1 ? (
+          <MoveDown className="my-2" size={16} />
+        ) : (
+          <></>
+        )
+      }
+    </>
+  );
 }
 
-function exportFile() {
-  console.log("Exporting file...");
-  const pipeline = usePipelineStore.getState().pipeline;
-  if (pipeline.name === undefined || pipeline.name === "") {
-    pipeline.name = "pipeline";
-  }
-  const blob = new Blob([JSON.stringify(pipeline)], {
-    type: "application/json",
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "pipeline.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-async function appendStep() {
-  const config = await DatabaseManager.converter.getFirstConverterDefinition();
-  const newStep = {
-    id: uuidv4(),
-    name: config.name,
-    config:
-      config.config?.map((item) => {
-        return {
-          name: item.name,
-          type: item.type,
-          default: item.default,
-          value: item.default,
-        } as PipelineStepConfig;
-      }) ?? [],
-  };
-  usePipelineStore.getState().addStep(newStep);
-}
+const populateSteps = (pipelineInput: Pipeline) => {
+  return (
+    <>
+      {...pipelineInput.steps.map((step, index) => {
+        return <StepList step={step} index={index} pipelineInput={pipelineInput} key={index} />;
+      })}
+    </>
+  );
+};
 
 export function StepView({ pipelineInput }: { pipelineInput: Pipeline }) {
-  const populateSteps = () => {
-    return (
-      <>
-        {...pipelineInput.steps.map((step, index) => {
-          return (
-            <>
-              <Step step={step} key={index} />
-              {index < pipelineInput.steps.length - 1 ? (
-                <MoveDown className="my-2" size={16} />
-              ) : (
-                <></>
-              )}
-            </>
-          );
-        })}
-      </>
-    );
-  };
 
   return (
     <div className="grow flex flex-col items-start justify-center min-w-full">
@@ -103,47 +54,40 @@ export function StepView({ pipelineInput }: { pipelineInput: Pipeline }) {
               />
             </div>
             <div className="flex flex-col items-start justify-center py-0">
-              <Button
-                onClick={() => {
-                  console.log("Saving pipeline...");
-                  savePipeline(usePipelineStore.getState().pipeline)
-                    .then(() => {
-                      console.log("Pipeline saved");
-                    })
-                    .catch((err) => {
-                      console.error("Error saving pipeline", err);
-                    });
-                }}
-              >
-                <Save />
-                Save Pipeline
-              </Button>
+              <SavePipelineButton />
             </div>
           </div>
           <div className="flex flex-row ">
             <div className="flex flex-col items-start justify-center py-0">
-              <Button onClick={() => importFile()}>
-                <FileDown />
-                Import
-              </Button>
+              <ImportButton />
             </div>
             <div className="flex flex-col items-start justify-center py-0">
-              <Button onClick={() => exportFile()}>
-                <FileUp />
-                Export
-              </Button>
+              <ExportButton />
             </div>
           </div>
         </div>
         <div className="flex flex-col items-center mt-2 min-w-full overflow-y-scroll max-h-50 no-scrollbar">
-          {populateSteps()}
+          {populateSteps(pipelineInput)}
         </div>
         <div className="grow flex flex-col items-center justify-center min-w-full">
-          <Button className="w-20" onClick={() => appendStep()}>
-            <Plus />
-          </Button>
+          <AppendStep />
         </div>
       </div>
     </div>
   );
+}
+
+function SavePipelineButton() {
+  var onClick = () => {
+    console.log("Saving pipeline...");
+    savePipeline(usePipelineStore.getState().pipeline)
+      .then(() => {
+        console.log("Pipeline saved");
+      })
+      .catch((err) => {
+        console.error("Error saving pipeline", err);
+      });
+  };
+
+  return <Button onClick={onClick}><Save /> Save Pipeline</Button>;
 }
