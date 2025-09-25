@@ -15,17 +15,17 @@ export function ConfigPopover({ configPopoverOpen, setConfigPopoverOpen, step }:
         <PopoverContent
             className="w-80 p-4 backdrop-blur-sm border border-slate-200 shadow-lg"
         >
-            {configPopoverContent(step, setConfigPopoverOpen)}
+            {ConfigPopoverContent(step, setConfigPopoverOpen)}
         </PopoverContent>
     </Popover>;
 }
 
-function configPopoverContent(step: PipelineStep, setConfigPopoverOpen: (open: boolean) => void) {
-    const [localConfig, setLocalConfig] = useState<Record<string, any>>(
+function ConfigPopoverContent(step: PipelineStep, setConfigPopoverOpen: (open: boolean) => void) {
+    const [localConfig, setLocalConfig] = useState<Record<string, string | number | boolean | null>>(
         step.config.reduce((acc, item) => {
             acc[item.name] = item.value !== null ? item.value : item.default;
             return acc;
-        }, {} as Record<string, any>)
+        }, {} as Record<string, string | number | boolean | null>)
     );
 
     const handleSave = () => {
@@ -85,12 +85,12 @@ function configPopoverContent(step: PipelineStep, setConfigPopoverOpen: (open: b
 
 function stepConfigItem(
     item: PipelineStepConfig,
-    localConfig: Record<string, any>,
-    setLocalConfig: (config: Record<string, any>) => void
+    localConfig: Record<string, string | number | boolean | null>,
+    setLocalConfig: (config: Record<string, string | number | boolean | null>) => void
 ) {
     const currentValue = localConfig[item.name] !== undefined ? localConfig[item.name] : item.default;
 
-    const handleChange = (value: any) => {
+    const handleChange = (value: string | number | boolean | null) => {
         setLocalConfig({
             ...localConfig,
             [item.name]: value
@@ -112,8 +112,8 @@ function stepConfigItem(
 
 function renderInputField(
     item: PipelineStepConfig,
-    currentValue: any,
-    handleChange: (value: any) => void
+    currentValue: string | number | boolean | null,
+    handleChange: (value: string | number | boolean | null) => void
 ) {
     const inputClassName = "w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
 
@@ -124,12 +124,12 @@ function renderInputField(
                     <input
                         type="checkbox"
                         id={item.name}
-                        checked={Boolean(currentValue)}
+                        checked={!!currentValue}
                         onChange={(e) => handleChange(e.target.checked)}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                     />
                     <span className="text-sm text-gray-600">
-                        {Boolean(currentValue) ? "Enabled" : "Disabled"}
+                        {currentValue ? "Enabled" : "Disabled"}
                     </span>
                 </div>
             );
@@ -141,7 +141,7 @@ function renderInputField(
                 <input
                     type="number"
                     id={item.name}
-                    value={currentValue || ""}
+                    value={typeof currentValue === 'number' ? currentValue : ''}
                     onChange={(e) => handleChange(Number(e.target.value))}
                     className={inputClassName}
                     placeholder={`Default: ${item.default}`}
@@ -154,7 +154,7 @@ function renderInputField(
                 <input
                     type="text"
                     id={item.name}
-                    value={currentValue || ""}
+                    value={typeof currentValue === 'string' ? currentValue : ''}
                     onChange={(e) => handleChange(e.target.value)}
                     className={inputClassName}
                     placeholder={`Default: ${item.default}`}

@@ -17,7 +17,7 @@ function executor(pipeline: Pipeline, input: string) {
       const value = configItem.value !== null ? configItem.value : configItem.default;
       acc[configItem.name] = value;
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, string | number | boolean | null>);
 
     console.log(`Step ${step.name} config:`, config);
 
