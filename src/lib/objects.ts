@@ -24,6 +24,7 @@ export type PipelineStepDbObject = {
   id: string;
   name: string;
   pipeline_id: string;
+  order: number;
   config: PipelineStepConfig[];
 };
 

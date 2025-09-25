@@ -1,4 +1,4 @@
-import { deletePipeline } from "@/services/saved-pipelines";
+import { deletePipeline, loadPipeline } from "@/services/saved-pipelines";
 import { Play, Star, Trash2 } from "lucide-react";
 
 export function SavedPipeline({
@@ -19,13 +19,13 @@ export function SavedPipeline({
       <div className="min-w-full text-xs my-2">{step_count} steps</div>
       <div className="flex flex-row min-w-full text-xs font-extralight justify-between">
         <div>
-          <Play size={15} />
+          <Play size={15} onClick={async () => await loadPipeline(id)} className="cursor-pointer hover:text-blue-500" />
         </div>
         <div>
           <div className="flex flex-row justify-between">
             <Star size={15} />
             <span className="w-1" />
-            <Trash2 size={15} onClick={async () => await deletePipeline(id)} />
+            <Trash2 size={15} onClick={async () => await deletePipeline(id)} className="cursor-pointer hover:text-red-500" />
           </div>
         </div>
       </div>

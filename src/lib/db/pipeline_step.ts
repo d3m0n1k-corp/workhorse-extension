@@ -1,7 +1,7 @@
 import { PipelineStepDbObject } from "../objects";
 
 const PIPELINE_STEP_DB_NAME = "pipeline_step_db";
-const PIPELINE_STEP_DB_VERSION = 1;
+const PIPELINE_STEP_DB_VERSION = 2;
 const RO = "readonly";
 const PIPELINE_ID_INDEX = "pipeline_id";
 
@@ -11,12 +11,41 @@ async function PipelineStepDB() {
       PIPELINE_STEP_DB_NAME,
       PIPELINE_STEP_DB_VERSION,
     );
-    request.onupgradeneeded = () => {
+    request.onupgradeneeded = (event) => {
       const db = request.result;
-      if (!db.objectStoreNames.contains(PIPELINE_STEP_DB_NAME)) {
-        db.createObjectStore(PIPELINE_STEP_DB_NAME, {
-          keyPath: "id",
-        }).createIndex(PIPELINE_ID_INDEX, PIPELINE_ID_INDEX, { unique: false });
+      const transaction = (event.target as IDBOpenDBRequest).transaction!;
+      const oldVersion = event.oldVersion;
+      const newVersion = event.newVersion || PIPELINE_STEP_DB_VERSION;
+
+      console.log(`Upgrading pipeline step database from version ${oldVersion} to ${newVersion}`);
+
+      if (oldVersion < 1) {
+        // Initial database creation
+        if (!db.objectStoreNames.contains(PIPELINE_STEP_DB_NAME)) {
+          db.createObjectStore(PIPELINE_STEP_DB_NAME, {
+            keyPath: "id",
+          }).createIndex(PIPELINE_ID_INDEX, PIPELINE_ID_INDEX, { unique: false });
+        }
+      }
+
+      if (oldVersion < 2) {
+        // Migration from version 1 to 2: Add order field
+        console.log("Migrating to version 2: Adding order field to existing steps");
+        const store = transaction.objectStore(PIPELINE_STEP_DB_NAME);
+
+        // For existing records without order field, we'll set order to 0
+        // This means old pipelines might not have the correct order, but new ones will
+        store.openCursor().onsuccess = (cursorEvent) => {
+          const cursor = (cursorEvent.target as IDBRequest<IDBCursorWithValue>).result;
+          if (cursor) {
+            const record = cursor.value;
+            if (record.order === undefined) {
+              record.order = 0; // Default order for existing records
+              cursor.update(record);
+            }
+            cursor.continue();
+          }
+        };
       }
     };
     request.onsuccess = () => {

@@ -27,11 +27,12 @@ export async function savePipeline(pipeline: Pipeline) {
     id: v4(),
   } as PipelineDbObject;
 
-  const dbSteps = pipeline.steps.map((step) => {
+  const dbSteps = pipeline.steps.map((step, index) => {
     return {
       id: step.id,
-      name: pipelineDbObject.name,
+      name: step.name,
       pipeline_id: pipelineDbObject.id,
+      order: index,
       config: step.config,
     } as PipelineStepDbObject;
   });
@@ -54,7 +55,10 @@ export async function loadPipeline(id: string) {
   }
   const dbSteps = await DatabaseManager.step.getSteps(id);
 
-  const steps = dbSteps.map(
+  // Sort steps by order to preserve the original sequence
+  const sortedDbSteps = dbSteps.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  const steps = sortedDbSteps.map(
     (dbStep) =>
       ({
         id: dbStep.id,
