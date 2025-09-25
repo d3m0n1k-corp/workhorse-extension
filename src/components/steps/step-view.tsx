@@ -6,9 +6,9 @@ import { savePipeline } from "@/services/saved-pipelines";
 import { ImportButton } from "./utility/import-btn";
 import { ExportButton } from "./utility/export-btn";
 import { AppendStep } from "./utility/append-step-btn";
-import { Pipeline } from "@/lib/objects";
+import { Pipeline, PipelineStep } from "@/lib/objects";
 
-function StepList({ step, index, pipelineInput }: { step: any; index: number; pipelineInput: Pipeline }) {
+function StepList({ step, index, pipelineInput }: { step: PipelineStep; index: number; pipelineInput: Pipeline }) {
   return (
     <>
       <Step step={step} key={index} />
@@ -78,7 +78,7 @@ export function StepView({ pipelineInput }: { pipelineInput: Pipeline }) {
 }
 
 function SavePipelineButton() {
-  var onClick = () => {
+  const onClick = () => {
     console.log("Saving pipeline...");
     savePipeline(usePipelineStore.getState().pipeline)
       .then(() => {
