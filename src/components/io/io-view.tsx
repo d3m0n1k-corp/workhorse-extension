@@ -10,12 +10,24 @@ function executor(pipeline: Pipeline, input: string) {
     console.error("No steps in pipeline");
     return;
   }
+
   const chain_in: ChainRequest[] = pipeline.steps.map((step: PipelineStep) => {
+    // Build config object from step configuration
+    const config = step.config.reduce((acc, configItem) => {
+      const value = configItem.value !== null ? configItem.value : configItem.default;
+      acc[configItem.name] = value;
+      return acc;
+    }, {} as Record<string, any>);
+
+    console.log(`Step ${step.name} config:`, config);
+
     return {
       name: step.name,
-      config_json: "{}",
+      config_json: JSON.stringify(config),
     };
   });
+
+  console.log("Chain request:", chain_in);
   const response = chain_execute(chain_in, input || "{}");
   if (response.Error) {
     console.error(response.Error);

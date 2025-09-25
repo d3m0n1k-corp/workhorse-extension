@@ -1,10 +1,10 @@
-import { CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DatabaseManager } from "@/lib/db/manager";
 import { PipelineStep } from "@/lib/objects";
 import { usePipelineStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import { Check, ChevronDown, Command } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { Ref, useEffect, useState } from "react";
 
 export function StepSelectionPopover({ converterSelectionPopoverOpen, setConverterSelectionPopoverOpen, converterSelectorTriggerRef, step, converterSelectionPopoverWidth }: { converterSelectionPopoverOpen: boolean; setConverterSelectionPopoverOpen: (open: boolean) => void; converterSelectorTriggerRef: Ref<HTMLDivElement>; step: PipelineStep; converterSelectionPopoverWidth: number; }) {
@@ -46,9 +46,20 @@ function ConverterSelectionPopoverContent({ step, setOpen }: { step: PipelineSte
                     return (
                         <CommandItem
                             key={item}
-                            onSelect={() => {
-                                step.name = item;
-                                usePipelineStore.getState().updateStep(step.id, step);
+                            onSelect={async () => {
+                                // Get the converter definition to update config
+                                const converterDef = await DatabaseManager.converter.getConverterDefinition(item);
+                                const updatedStep = {
+                                    ...step,
+                                    name: item,
+                                    config: converterDef.config?.map((configItem) => ({
+                                        name: configItem.name,
+                                        type: configItem.type,
+                                        default: configItem.default,
+                                        value: configItem.default,
+                                    })) ?? []
+                                };
+                                usePipelineStore.getState().updateStep(step.id, updatedStep);
                                 setOpen(false);
                             }}
                         >
