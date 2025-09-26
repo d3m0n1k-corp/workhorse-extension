@@ -1,0 +1,91 @@
+name: Build & Release Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      wasm_version:
+        description: "WASM release tag to fetch (defaults to latest)"
+        required: false
+        default: "latest"
+  push:
+    tags: ["v*"] # triggers release job only
+
+env:
+  WASM_REPO: "d3m0n1k-corp/workhorse-core"
+
+jobs:
+  build-extension:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout extension repo
+      - name: Checkout extension repo
+        uses: actions/checkout@v4
+
+      # Figure out which release to download
+      - name: Set WASM release version
+        id: wasm_version
+        run: |
+          if [ "${{ github.event.inputs.wasm_version }}" = "latest" ]; then
+            echo "version=latest" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ github.event.inputs.wasm_version }}" >> $GITHUB_OUTPUT
+          fi
+
+      # Download WASM release asset
+      - name: Download WASM binary
+        uses: dsaltares/fetch-gh-release-asset@1.1.2
+        with:
+          repo: ${{env.WASM_REPO}}
+          version: ${{ steps.wasm_version.outputs.version }}
+          file: workhorse.wasm
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: public/workhorse.wasm
+
+      # Install dependencies & build
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run build
+
+      # Upload distributable
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-dist
+          path: dist/
+
+  release-extension:
+    runs-on: ubuntu-latest
+    needs: build-extension
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-dist
+          path: dist
+
+      - name: Zip extension
+        run: zip -r extension.zip dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: extension.zip
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## Changes in this release
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
