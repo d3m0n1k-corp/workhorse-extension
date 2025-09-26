@@ -4,11 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       wasm_version:
-        description: "WASM release tag to fetch (defaults to latest)"
+        description: "WASM release version to fetch (defaults to latest)"
         required: false
         default: "latest"
-  push:
-    tags: ["v*"] # triggers release job only
 
 env:
   WASM_REPO: "d3m0n1k-corp/workhorse-core"
@@ -27,7 +25,7 @@ jobs:
         id: wasm_version
         run: |
           if [ "${{ github.event.inputs.wasm_version }}" = "latest" ]; then
-            echo "version=latest" >> $GITHUB_OUTPUT
+            echo "version=tags/latest" >> $GITHUB_OUTPUT
           else
             echo "version=${{ github.event.inputs.wasm_version }}" >> $GITHUB_OUTPUT
           fi
