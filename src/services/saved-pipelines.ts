@@ -67,10 +67,38 @@ export async function loadPipeline(id: string) {
       }) as PipelineStep,
   );
 
-  usePipelineStore.getState().replacePipeline({
+  const loadedPipeline = {
     name: pipeline.name,
     steps: steps,
-  });
+  };
+
+  usePipelineStore.getState().replacePipeline(loadedPipeline);
+  return loadedPipeline; // Return the pipeline for direct use
+}
+
+export async function getPipelineById(id: string): Promise<Pipeline> {
+  const pipeline = await DatabaseManager.pipeline.getPipeline(id);
+  if (!pipeline) {
+    throw new Error("Pipeline not found");
+  }
+  const dbSteps = await DatabaseManager.step.getSteps(id);
+
+  // Sort steps by order to preserve the original sequence
+  const sortedDbSteps = dbSteps.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  const steps = sortedDbSteps.map(
+    (dbStep) =>
+      ({
+        id: dbStep.id,
+        name: dbStep.name,
+        config: dbStep.config,
+      }) as PipelineStep,
+  );
+
+  return {
+    name: pipeline.name,
+    steps: steps,
+  };
 }
 
 export async function deletePipeline(id: string) {
